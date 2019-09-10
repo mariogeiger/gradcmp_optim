@@ -26,6 +26,7 @@ class Optimizer(torch.optim.Optimizer):
         for group in self.param_groups:
             group['step'] = 0
             group['t'] = 0
+            group['accepted'] = True
 
             for p in group['params']:
                 if p.grad is None:
@@ -73,6 +74,7 @@ class Optimizer(torch.optim.Optimizer):
                     # good
                     group['t'] += group['dt']
                     group['step'] += 1
+                    group['accepted'] = True
 
                     # save current state
                     # save current gradients
@@ -89,6 +91,7 @@ class Optimizer(torch.optim.Optimizer):
                         group['dt'] *= 1.1
                 else:
                     group['dt'] /= 10
+                    group['accepted'] = False
 
             # propose new state from current
             for p in group['params']:
